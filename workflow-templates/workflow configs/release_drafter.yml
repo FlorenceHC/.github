@@ -1,0 +1,27 @@
+name-template: v$NEXT_PATCH_VERSION
+tag-template: v$NEXT_PATCH_VERSION
+categories:
+- title: 🚀 Features
+  labels:
+  - feature
+  - enhancement
+  - CI/CD
+- title: 🐛 Bug Fixes
+  labels:
+  - fix
+  - bugfix
+  - bug
+  - bug 🐛
+- title: 🧰 Maintenance
+  labels:
+  - chore
+  - documentation
+  - security
+  - dependencies
+exclude-labels:
+- skip-changelog
+change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
+template: |
+  ## Changes
+
+  $CHANGES

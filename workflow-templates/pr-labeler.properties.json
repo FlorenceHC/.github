@@ -1,0 +1,14 @@
+{
+    "name": "PR labeler workflow",
+    "description": "Labels PR's based on branch matching patterns.  NOTE: Requires `.github/pr_labeler.yml` with branch patterns.",
+    "iconName": "example-icon",
+    "categories": [
+        "Swift",
+        "Kotlin",
+        "python",
+        "ruby"
+    ],
+    "filePatterns": [
+        "CHANGELOG*"
+    ]
+}

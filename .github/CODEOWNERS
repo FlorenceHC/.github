@@ -1,0 +1,14 @@
+# https://help.github.com/articles/about-codeowners/
+
+# These owners will be the default owners for everything in
+# the repo. Unless a later match takes precedence, they will
+# be requested for review when someone opens a PR.
+* @FlorenceHC/@development-team
+
+# Order is important. The last matching pattern has the most precedence.
+# So if a pull request only touches ruby files, only these owners
+# will be requested to review.
+*.lock    @dependabot
+
+Gemfile    @dependabot
+.bundle/    @dependabot

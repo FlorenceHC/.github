@@ -1,0 +1,14 @@
+{
+    "name": "Release drafter workflow",
+    "description": "Drafts a release on merges to master/develop.  NOTE: requires configuration file.  See example in config folder.",
+    "iconName": "example-icon",
+    "categories": [
+        "Swift",
+        "Kotlin",
+        "python",
+        "ruby"
+    ],
+    "filePatterns": [
+        "CHANGELOG*"
+    ]
+}
