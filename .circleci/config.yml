@@ -1,0 +1,57 @@
+---
+version: 2.1
+orbs:
+    ios: florencehc/ios@dev:alpha
+    jira: circleci/jira@1.3.1
+    slack: circleci/slack@4.4.0
+
+ios_contexts: &ios_contexts [iOS, slack]
+
+###########
+# Filters #
+###########
+branch_filters: &branch_filters [main, master, development, /^hotfix.*/, /^release.*/]
+
+#############
+# workflows #
+#############
+workflows:
+    danger:
+        jobs:
+            - ios/run_with_setup:
+                  name: prepare
+                  context: *ios_contexts
+                  scripts:
+                    - run: bundle exec danger
+                  post-steps:
+                    - jira/notify
+                    - slack/notify:
+                        channel: 'ios-builds'
+                        custom: |
+                            {
+                            "blocks": [
+                                {
+                                    "type": "actions",
+                                    "elements": [
+                                        {
+                                            "type": "button",
+                                            "text": {
+                                                "type": "plain_text",
+                                                "emoji": true,
+                                                "text": "Add a suggestion"
+                                            },
+                                            "value": "click_me_123"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "image",
+                                    "image_url": "https://i1.wp.com/thetempest.co/wp-content/uploads/2017/08/The-wise-words-of-Michael-Scott-Imgur-2.jpg?w=1024&ssl=1",
+                                    "alt_text": "inspiration"
+                                }
+                            ]
+                            }
+                        event: always
+                  filters:
+                    branches:
+                        ignore: *branch_filters
