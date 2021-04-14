@@ -1,22 +1,68 @@
+---
 version: 2
 mergeable:
-- when: pull_request.*, issues.*
-  validate:
-  - do: title
-    no_empty:
-      enabled: true
-      message: Please add a title.
-    must_exclude:
-      regex: ^\[WIP\]
-  - do: label
-    must_exclude:
-      regex: WIP
-- when: schedule.repository
-  validate:
-  - do: stale
-    days: 14
-    type: pull_request, issues
-  pass:
-  - do: comment
-    payload:
-      body: This is old. Is it still relevant?
+  - when: issues.opened
+    name: 'Verify title includes JIRA ticket'
+    validate:
+      - do: title
+        must_include:
+          regex: '\[[a-zA-Z]{2,6}-\d{1,7}\]'
+          regex_flag: 'none'
+          message: >
+            Please include the Jira ticket number in the title (ex: [AAA-123]).
+    pass:
+      - do: comment
+        payload:
+          body: >
+            Please prepend the Jira ticket to PR title surrounded by brackets (ex: [AAA-123]).
+  - when: pull_request.*, pull_request_review.*
+    name: 'Non Empty Description'
+    validate:
+      - do: description
+        no_empty:
+          enabled: true
+  - when: pull_request.*
+    validate:
+      - do: title
+        must_exclude:
+          regex: ^\[WIP\]
+      - do: label
+        must_exclude:
+          regex: 'wip'
+      - do: label
+        must_include:
+          regex: 'automerge'
+    pass:
+      - do: merge
+        merge_method: 'squash'
+      - do: comment
+        payload:
+          body: >
+            This PR was merged using the automerge label.
+  - when: pull_request.*
+    validate:
+      - do: size
+        ignore: ['gitignore', 'pods/*', '**/generated*.swift']
+        lines:
+          max:
+            count: 1000
+            message: >
+              There's a lot of changes in this PR.  Any way to split it up?
+  - when: schedule.repository
+    validate:
+      - do: stale
+        days: 14
+        type: pull_request, issues
+    pass:
+      - do: comment
+        payload:
+          body: This is old. Is it still relevant?
+  - when: schedule.repository
+    validate:
+      - do: stale
+        days: 20
+        type: pull_request, issues
+    pass:
+      - do: close
+        payload:
+          body: No response has been received in 20 days.  Closing...
